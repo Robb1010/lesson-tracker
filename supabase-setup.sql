@@ -94,44 +94,48 @@ alter table user_settings add column if not exists start_date date;
 
 create or replace function get_user_balance()
 returns json
-language sql
+language plpgsql
 security definer
 stable
 set search_path = public
 as $$
-  with s as (
-    select lessons_per_week, lesson_days, start_date
+declare
+  v_settings    record;
+  v_total       int;
+  v_scheduled   int := 0;
+  v_missed      int;
+begin
+  select lessons_per_week, lesson_days, start_date
+    into v_settings
     from user_settings
-    where user_id = auth.uid()
-  ),
-  total as (
-    select coalesce(sum(weeks), 0) * (select lessons_per_week from s) as v
+   where user_id = auth.uid();
+
+  select coalesce(sum(weeks), 0) * v_settings.lessons_per_week
+    into v_total
     from purchases
-    where user_id = auth.uid()
-  ),
-  scheduled as (
-    select count(*)::int as v
-    from generate_series(
-      (select start_date from s),
-      current_date,
-      '1 day'::interval
-    ) d
-    where extract(dow from d)::int = any((select lesson_days from s))
-      and (select start_date from s) is not null
-  ),
-  missed as (
-    select count(*)::int as v
+   where user_id = auth.uid();
+
+  if v_settings.start_date is not null then
+    select count(*)::int
+      into v_scheduled
+      from generate_series(v_settings.start_date, current_date, '1 day'::interval) d
+     where extract(dow from d)::int = any(v_settings.lesson_days);
+  end if;
+
+  select count(*)::int
+    into v_missed
     from lessons
-    where user_id = auth.uid()
-      and lesson_date <= current_date
-      and status = 'missed'
-  )
-  select json_build_object(
-    'totalLessons', (select v from total),
-    'attended',    greatest((select v from scheduled) - (select v from missed), 0),
-    'banked',      (select v from missed),
-    'remaining',   (select v from total) - greatest((select v from scheduled) - (select v from missed), 0)
-  )
+   where user_id = auth.uid()
+     and lesson_date <= current_date
+     and status = 'missed';
+
+  return json_build_object(
+    'totalLessons', v_total,
+    'attended',     greatest(v_scheduled - v_missed, 0),
+    'banked',       v_missed,
+    'remaining',    v_total - greatest(v_scheduled - v_missed, 0)
+  );
+end;
 $$;
 
 
