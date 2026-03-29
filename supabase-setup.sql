@@ -48,6 +48,9 @@ alter table lessons       enable row level security;
 alter table user_settings enable row level security;
 
 -- purchases
+drop policy if exists "Users can view own purchases"   on purchases;
+drop policy if exists "Users can insert own purchases" on purchases;
+drop policy if exists "Users can delete own purchases" on purchases;
 create policy "Users can view own purchases"
   on purchases for select using (auth.uid() = user_id);
 create policy "Users can insert own purchases"
@@ -56,6 +59,10 @@ create policy "Users can delete own purchases"
   on purchases for delete using (auth.uid() = user_id);
 
 -- lessons
+drop policy if exists "Users can view own lessons"   on lessons;
+drop policy if exists "Users can insert own lessons" on lessons;
+drop policy if exists "Users can update own lessons" on lessons;
+drop policy if exists "Users can delete own lessons" on lessons;
 create policy "Users can view own lessons"
   on lessons for select using (auth.uid() = user_id);
 create policy "Users can insert own lessons"
@@ -66,6 +73,7 @@ create policy "Users can delete own lessons"
   on lessons for delete using (auth.uid() = user_id);
 
 -- user_settings
+drop policy if exists "Users manage own settings" on user_settings;
 create policy "Users manage own settings"
   on user_settings for all using (auth.uid() = user_id);
 
