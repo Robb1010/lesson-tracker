@@ -4,7 +4,7 @@ interface Props {
   onLog: (date: string, status: 'attended' | 'missed', note?: string) => Promise<void>
 }
 
-const inputCls = 'w-full bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg px-3 py-2 text-sm text-slate-900 dark:text-slate-100 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 transition-colors'
+const inputCls = 'w-full min-w-0 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg px-3 py-2 text-sm text-slate-900 dark:text-slate-100 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 transition-colors'
 
 export function LogLesson({ onLog }: Props) {
   const [date, setDate] = useState(() => new Date().toISOString().split('T')[0])
