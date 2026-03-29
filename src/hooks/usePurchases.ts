@@ -2,7 +2,7 @@ import { useState, useEffect, useCallback } from 'react'
 import { supabase } from '../lib/supabase'
 import type { Purchase } from '../types'
 
-export function usePurchases(userId: string | undefined) {
+export function usePurchases(userId: string | undefined, onMutate?: () => void) {
   const [purchases, setPurchases] = useState<Purchase[]>([])
   const [loading, setLoading] = useState(true)
 
@@ -28,11 +28,13 @@ export function usePurchases(userId: string | undefined) {
       note: note || null,
     })
     await fetchPurchases()
+    onMutate?.()
   }
 
   const deletePurchase = async (id: string) => {
     await supabase.from('purchases').delete().eq('id', id)
     await fetchPurchases()
+    onMutate?.()
   }
 
   return { purchases, loading, addWeeks, deletePurchase }

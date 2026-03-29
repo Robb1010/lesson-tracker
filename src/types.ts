@@ -28,6 +28,7 @@ export interface UserSettings {
   language: 'en' | 'es'
   lessons_per_week: number
   lesson_days: number[] // 0=Sun, 1=Mon, ..., 6=Sat
+  start_date: string | null // YYYY-MM-DD, when lessons began
 }
 
 export const DEFAULT_SETTINGS: UserSettings = {
@@ -35,4 +36,5 @@ export const DEFAULT_SETTINGS: UserSettings = {
   language: 'en',
   lessons_per_week: 2,
   lesson_days: [1, 3],
+  start_date: null,
 }

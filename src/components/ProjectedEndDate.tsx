@@ -1,14 +1,16 @@
+import type { Lesson } from '../types'
 import { calculateProjectedEndDate } from '../lib/calculations'
 import { useI18n } from '../lib/i18n'
 
 interface Props {
   remaining: number
   lessonDays: number[]
+  futureMissed: Lesson[]
 }
 
-export function ProjectedEndDate({ remaining, lessonDays }: Props) {
+export function ProjectedEndDate({ remaining, lessonDays, futureMissed }: Props) {
   const { t, language } = useI18n()
-  const endDate = calculateProjectedEndDate(remaining, lessonDays)
+  const endDate = calculateProjectedEndDate(remaining, lessonDays, futureMissed)
 
   const locale = language === 'es' ? 'es-ES' : 'en-US'
   const formatted = endDate

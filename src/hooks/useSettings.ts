@@ -30,7 +30,7 @@ export function useSettings(userId: string | undefined) {
     (async () => {
       const { data } = await supabase
         .from('user_settings')
-        .select('theme, language, lessons_per_week, lesson_days')
+        .select('theme, language, lessons_per_week, lesson_days, start_date')
         .eq('user_id', userId)
         .single()
 
@@ -40,6 +40,7 @@ export function useSettings(userId: string | undefined) {
           language: data.language,
           lessons_per_week: data.lessons_per_week,
           lesson_days: data.lesson_days,
+          start_date: data.start_date ?? null,
         }
         setSettings(s)
         writeLocalSettings(s)

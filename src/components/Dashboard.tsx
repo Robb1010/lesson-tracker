@@ -3,10 +3,10 @@ import type { User } from '@supabase/supabase-js'
 import type { UserSettings } from '../types'
 import { usePurchases } from '../hooks/usePurchases'
 import { useLessons } from '../hooks/useLessons'
-import { calculateBalance } from '../lib/calculations'
+import { useBalance } from '../hooks/useBalance'
+import { calculateProjectedEndDate } from '../lib/calculations'
 import { useI18n } from '../lib/i18n'
 import { BalanceCard } from './BalanceCard'
-import { ProjectedEndDate } from './ProjectedEndDate'
 import { AddWeeks } from './AddWeeks'
 import { LogLesson } from './LogLesson'
 import { LessonHistory } from './LessonHistory'
@@ -20,11 +20,28 @@ interface Props {
 }
 
 export function Dashboard({ user, onSignOut, settings, onUpdateSettings }: Props) {
-  const { t } = useI18n()
+  const { t, language } = useI18n()
   const [showSettings, setShowSettings] = useState(false)
-  const { purchases, addWeeks } = usePurchases(user.id)
-  const { lessons, logLesson, deleteLesson } = useLessons(user.id)
-  const balance = calculateBalance(purchases, lessons, settings.lessons_per_week)
+
+  const { balance, refresh: refreshBalance } = useBalance(user.id)
+  const { addWeeks } = usePurchases(user.id, refreshBalance)
+  const { lessons, markMissed, deleteLesson } = useLessons(user.id, refreshBalance)
+
+  const today = new Date().toISOString().split('T')[0]
+  const futureMissed = lessons.filter(l => l.lesson_date > today)
+
+  const endDate = calculateProjectedEndDate(balance.remaining, settings.lesson_days, futureMissed)
+  const locale = language === 'es' ? 'es-ES' : 'en-US'
+  const endDateFormatted = endDate
+    ? endDate.toLocaleDateString(locale, { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })
+    : null
+
+  // Also refresh balance when settings change (start_date, lessons_per_week affect the calculation)
+  const handleUpdateSettings = async (partial: Partial<UserSettings>) => {
+    onUpdateSettings(partial)
+    // Small delay so the DB write completes before we re-call the RPC
+    setTimeout(refreshBalance, 300)
+  }
 
   return (
     <div className="min-h-screen bg-slate-50 dark:bg-slate-950 overflow-x-hidden">
@@ -59,10 +76,15 @@ export function Dashboard({ user, onSignOut, settings, onUpdateSettings }: Props
 
       <main className="max-w-3xl mx-auto px-4 py-6 flex flex-col gap-4">
         <BalanceCard {...balance} />
-        <ProjectedEndDate remaining={balance.remaining} lessonDays={settings.lesson_days} />
+        <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl px-4 py-3 flex items-center justify-between">
+          <p className="text-xs text-slate-500 dark:text-slate-400">{t('projected.label')}</p>
+          <p className="text-sm font-medium text-slate-900 dark:text-slate-100">
+            {endDateFormatted ?? t('projected.none')}
+          </p>
+        </div>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <AddWeeks onAdd={addWeeks} />
-          <LogLesson onLog={logLesson} />
+          <LogLesson onMark={markMissed} />
         </div>
         <p className="text-sm font-medium text-slate-500 dark:text-slate-400 mt-2">
           {t('dashboard.history')}
@@ -73,7 +95,7 @@ export function Dashboard({ user, onSignOut, settings, onUpdateSettings }: Props
       {showSettings && (
         <Settings
           settings={settings}
-          onUpdate={onUpdateSettings}
+          onUpdate={handleUpdateSettings}
           onClose={() => setShowSettings(false)}
         />
       )}

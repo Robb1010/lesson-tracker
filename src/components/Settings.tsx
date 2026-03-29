@@ -107,6 +107,19 @@ export function Settings({ settings, onUpdate, onClose }: Props) {
           </div>
         </fieldset>
 
+        {/* Start date */}
+        <fieldset className="flex flex-col gap-2">
+          <legend className="text-xs font-medium text-slate-500 dark:text-slate-400 uppercase tracking-wide">
+            {t('settings.startDate')}
+          </legend>
+          <input
+            type="date"
+            value={settings.start_date ?? ''}
+            onChange={e => onUpdate({ start_date: e.target.value || null })}
+            className="block w-full min-w-0 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg px-3 py-2 text-sm text-slate-900 dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 transition-colors"
+          />
+        </fieldset>
+
         {/* Lesson days */}
         <fieldset className="flex flex-col gap-2">
           <legend className="text-xs font-medium text-slate-500 dark:text-slate-400 uppercase tracking-wide">

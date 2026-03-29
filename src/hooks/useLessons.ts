@@ -2,7 +2,7 @@ import { useState, useEffect, useCallback } from 'react'
 import { supabase } from '../lib/supabase'
 import type { Lesson } from '../types'
 
-export function useLessons(userId: string | undefined) {
+export function useLessons(userId: string | undefined, onMutate?: () => void) {
   const [lessons, setLessons] = useState<Lesson[]>([])
   const [loading, setLoading] = useState(true)
 
@@ -11,6 +11,7 @@ export function useLessons(userId: string | undefined) {
     const { data } = await supabase
       .from('lessons')
       .select('*')
+      .eq('status', 'missed')
       .order('lesson_date', { ascending: false })
     setLessons(data ?? [])
     setLoading(false)
@@ -20,23 +21,25 @@ export function useLessons(userId: string | undefined) {
     fetchLessons()
   }, [fetchLessons])
 
-  const logLesson = async (lessonDate: string, status: 'attended' | 'missed', note?: string) => {
+  const markMissed = async (lessonDate: string, note?: string) => {
     await supabase.from('lessons').upsert(
       {
         user_id: userId,
         lesson_date: lessonDate,
-        status,
+        status: 'missed',
         note: note || null,
       },
       { onConflict: 'user_id,lesson_date' }
     )
     await fetchLessons()
+    onMutate?.()
   }
 
   const deleteLesson = async (id: string) => {
     await supabase.from('lessons').delete().eq('id', id)
     await fetchLessons()
+    onMutate?.()
   }
 
-  return { lessons, loading, logLesson, deleteLesson }
+  return { lessons, loading, markMissed, deleteLesson }
 }

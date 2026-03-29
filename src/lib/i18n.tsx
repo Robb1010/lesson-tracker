@@ -32,11 +32,12 @@ const translations = {
     'addWeeks.add': 'Add',
 
     // Log lesson
-    'logLesson.title': 'Log Lesson',
+    'logLesson.title': 'Mark Missed',
     'logLesson.attended': 'Attended',
     'logLesson.missed': 'Missed',
     'logLesson.note': 'Note (optional)',
     'logLesson.log': 'Log',
+    'logLesson.markMissed': 'Mark as Missed',
 
     // History
     'history.empty': 'No lessons logged yet.',
@@ -55,6 +56,7 @@ const translations = {
     'settings.language': 'Language',
     'settings.lessonsPerWeek': 'Lessons per week',
     'settings.lessonDays': 'Lesson days',
+    'settings.startDate': 'Start date',
 
     // Days
     'days.mon': 'Mon',
@@ -96,11 +98,12 @@ const translations = {
     'addWeeks.add': 'A\u00f1adir',
 
     // Log lesson
-    'logLesson.title': 'Registrar Clase',
+    'logLesson.title': 'Marcar Falta',
     'logLesson.attended': 'Asist\u00ed',
     'logLesson.missed': 'Falt\u00e9',
     'logLesson.note': 'Nota (opcional)',
     'logLesson.log': 'Registrar',
+    'logLesson.markMissed': 'Marcar como falta',
 
     // History
     'history.empty': 'No hay clases registradas.',
@@ -119,6 +122,7 @@ const translations = {
     'settings.language': 'Idioma',
     'settings.lessonsPerWeek': 'Clases por semana',
     'settings.lessonDays': 'D\u00edas de clase',
+    'settings.startDate': 'Fecha de inicio',
 
     // Days
     'days.mon': 'Lun',
