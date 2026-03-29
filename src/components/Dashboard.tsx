@@ -22,7 +22,7 @@ export function Dashboard({ user, onSignOut, dark, onToggleTheme }: Props) {
   const balance = calculateBalance(purchases, lessons)
 
   return (
-    <div className="min-h-screen bg-slate-50 dark:bg-slate-950">
+    <div className="min-h-screen bg-slate-50 dark:bg-slate-950 overflow-x-hidden">
       <header className="bg-white dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800 px-4 py-3">
         <div className="max-w-3xl mx-auto flex items-center justify-between">
           <h1 className="text-base font-semibold tracking-tight text-slate-900 dark:text-slate-50">

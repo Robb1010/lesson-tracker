@@ -9,14 +9,14 @@ export function BalanceCard({ totalLessons, attended, banked, remaining }: Balan
   ]
 
   return (
-    <div className="grid grid-cols-4 gap-3">
+    <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
       {cards.map(({ label, value, color }) => (
         <div
           key={label}
-          className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl p-4"
+          className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl p-3 sm:p-4"
         >
           <p className="text-xs text-slate-500 dark:text-slate-400 mb-1">{label}</p>
-          <p className={`text-3xl font-bold tabular-nums ${color}`}>{value}</p>
+          <p className={`text-2xl sm:text-3xl font-bold tabular-nums ${color}`}>{value}</p>
         </div>
       ))}
     </div>
