@@ -79,6 +79,13 @@ create policy "Users manage own settings"
 
 
 -- ------------------------------------------------------------
+-- Migrations (safe to run on existing databases)
+-- ------------------------------------------------------------
+
+alter table user_settings add column if not exists start_date date;
+
+
+-- ------------------------------------------------------------
 -- Balance function
 -- Counts scheduled lesson days from start_date to today using
 -- generate_series, then subtracts manually missed lessons.
@@ -128,9 +135,3 @@ as $$
 $$;
 
 
--- ------------------------------------------------------------
--- Migrations (run these if you already have the tables)
--- ------------------------------------------------------------
-
--- Add start_date if missing from user_settings:
--- alter table user_settings add column if not exists start_date date;
