@@ -1,3 +1,3 @@
 # Lesson Tracker
 
-A tool for tracking lessons.
+A simple app to track Spanish lesson attendance and banked credits.
