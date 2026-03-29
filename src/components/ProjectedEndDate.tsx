@@ -17,10 +17,10 @@ export function ProjectedEndDate({ remaining }: Props) {
     : null
 
   return (
-    <div className="bg-white rounded-lg p-4 shadow-sm border border-gray-200">
-      <p className="text-sm text-gray-500">Lessons run out on</p>
-      <p className="text-lg font-semibold text-gray-900">
-        {formatted ?? 'No lessons remaining'}
+    <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl px-4 py-3 flex items-center justify-between">
+      <p className="text-xs text-slate-500 dark:text-slate-400">Lessons run out on</p>
+      <p className="text-sm font-medium text-slate-900 dark:text-slate-100">
+        {formatted ?? '—'}
       </p>
     </div>
   )
