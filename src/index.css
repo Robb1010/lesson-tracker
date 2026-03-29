@@ -3,6 +3,11 @@
 @custom-variant dark (&:where(.dark, .dark *));
 
 @layer base {
+  /* Prevent iOS Safari from zooming on input focus (requires >= 16px font-size) */
+  input, select, textarea {
+    font-size: 16px;
+  }
+
   html, body {
     background-color: #f8fafc; /* slate-50 */
   }
