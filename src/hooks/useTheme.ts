@@ -10,6 +10,10 @@ export function useTheme() {
   useEffect(() => {
     document.documentElement.classList.toggle('dark', dark)
     localStorage.setItem('theme', dark ? 'dark' : 'light')
+    // Keep browser chrome color in sync with theme toggle
+    document.querySelectorAll('meta[name="theme-color"]').forEach(el => {
+      el.setAttribute('content', dark ? '#0f172a' : '#ffffff')
+    })
   }, [dark])
 
   return { dark, toggle: () => setDark(d => !d) }
