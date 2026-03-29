@@ -5,7 +5,7 @@
 @layer base {
   /* Prevent iOS Safari from zooming on input focus (requires >= 16px font-size) */
   input, select, textarea {
-    font-size: 16px;
+    font-size: 16px !important;
   }
 
   html, body {
