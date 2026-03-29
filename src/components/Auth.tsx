@@ -1,31 +1,28 @@
-import { ThemeToggle } from './ThemeToggle'
+import { useI18n } from '../lib/i18n'
 
 interface Props {
   onSignIn: () => void
-  dark: boolean
-  onToggleTheme: () => void
 }
 
-export function Auth({ onSignIn, dark, onToggleTheme }: Props) {
+export function Auth({ onSignIn }: Props) {
+  const { t } = useI18n()
+
   return (
     <div className="min-h-screen flex flex-col bg-slate-50 dark:bg-slate-950">
-      <div className="flex justify-end p-4">
-        <ThemeToggle dark={dark} onToggle={onToggleTheme} />
-      </div>
       <div className="flex-1 flex items-center justify-center px-4">
         <div className="text-center">
           <h1 className="text-3xl font-semibold tracking-tight text-slate-900 dark:text-slate-50 mb-2">
-            Lesson Tracker
+            {t('auth.title')}
           </h1>
           <p className="text-slate-500 dark:text-slate-400 mb-8">
-            Track your Spanish lesson attendance
+            {t('auth.subtitle')}
           </p>
           <button
             onClick={onSignIn}
             className="inline-flex items-center gap-2 bg-slate-900 dark:bg-slate-100 text-white dark:text-slate-900 px-5 py-2.5 rounded-lg text-sm font-medium hover:bg-slate-700 dark:hover:bg-slate-200 transition-colors cursor-pointer"
           >
             <GoogleIcon />
-            Sign in with Google
+            {t('auth.signIn')}
           </button>
         </div>
       </div>

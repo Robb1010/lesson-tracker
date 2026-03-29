@@ -1,11 +1,14 @@
 import type { Balance } from '../types'
+import { useI18n } from '../lib/i18n'
 
 export function BalanceCard({ totalLessons, attended, banked, remaining }: Balance) {
+  const { t } = useI18n()
+
   const cards = [
-    { label: 'Total', value: totalLessons, color: 'text-slate-900 dark:text-slate-100' },
-    { label: 'Attended', value: attended, color: 'text-emerald-600 dark:text-emerald-400' },
-    { label: 'Banked', value: banked, color: 'text-amber-600 dark:text-amber-400' },
-    { label: 'Remaining', value: remaining, color: 'text-blue-600 dark:text-blue-400' },
+    { label: t('balance.total'), value: totalLessons, color: 'text-slate-900 dark:text-slate-100' },
+    { label: t('balance.attended'), value: attended, color: 'text-emerald-600 dark:text-emerald-400' },
+    { label: t('balance.banked'), value: banked, color: 'text-amber-600 dark:text-amber-400' },
+    { label: t('balance.remaining'), value: remaining, color: 'text-blue-600 dark:text-blue-400' },
   ]
 
   return (

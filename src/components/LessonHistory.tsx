@@ -1,4 +1,5 @@
 import type { Lesson } from '../types'
+import { useI18n } from '../lib/i18n'
 
 interface Props {
   lessons: Lesson[]
@@ -6,10 +7,13 @@ interface Props {
 }
 
 export function LessonHistory({ lessons, onDelete }: Props) {
+  const { t, language } = useI18n()
+  const locale = language === 'es' ? 'es-ES' : 'en-US'
+
   if (lessons.length === 0) {
     return (
       <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl px-4 py-6 text-center text-sm text-slate-400">
-        No lessons logged yet.
+        {t('history.empty')}
       </div>
     )
   }
@@ -20,17 +24,18 @@ export function LessonHistory({ lessons, onDelete }: Props) {
         <table className="w-full text-sm">
           <thead>
             <tr className="border-b border-slate-200 dark:border-slate-800">
-              <th className="text-left px-4 py-2.5 text-xs font-medium text-slate-400 dark:text-slate-500">Date</th>
-              <th className="text-left px-4 py-2.5 text-xs font-medium text-slate-400 dark:text-slate-500 hidden sm:table-cell">Day</th>
-              <th className="text-left px-4 py-2.5 text-xs font-medium text-slate-400 dark:text-slate-500">Status</th>
-              <th className="text-left px-4 py-2.5 text-xs font-medium text-slate-400 dark:text-slate-500 hidden md:table-cell">Note</th>
+              <th className="text-left px-4 py-2.5 text-xs font-medium text-slate-400 dark:text-slate-500">{t('history.date')}</th>
+              <th className="text-left px-4 py-2.5 text-xs font-medium text-slate-400 dark:text-slate-500 hidden sm:table-cell">{t('history.day')}</th>
+              <th className="text-left px-4 py-2.5 text-xs font-medium text-slate-400 dark:text-slate-500">{t('history.status')}</th>
+              <th className="text-left px-4 py-2.5 text-xs font-medium text-slate-400 dark:text-slate-500 hidden md:table-cell">{t('history.note')}</th>
               <th className="px-4 py-2.5"></th>
             </tr>
           </thead>
           <tbody>
             {lessons.map(lesson => {
               const d = new Date(lesson.lesson_date + 'T12:00:00')
-              const dayName = d.toLocaleDateString('en-US', { weekday: 'short' })
+              const dayName = d.toLocaleDateString(locale, { weekday: 'short' })
+              const statusLabel = lesson.status === 'attended' ? t('logLesson.attended') : t('logLesson.missed')
               return (
                 <tr
                   key={lesson.id}
@@ -50,7 +55,7 @@ export function LessonHistory({ lessons, onDelete }: Props) {
                           : 'bg-amber-50 dark:bg-amber-900/30 text-amber-700 dark:text-amber-400'
                       }`}
                     >
-                      {lesson.status}
+                      {statusLabel}
                     </span>
                   </td>
                   <td className="px-4 py-2.5 text-slate-400 dark:text-slate-500 max-w-[200px] truncate hidden md:table-cell">
@@ -61,7 +66,7 @@ export function LessonHistory({ lessons, onDelete }: Props) {
                       onClick={() => onDelete(lesson.id)}
                       className="text-xs text-slate-400 hover:text-red-500 dark:text-slate-500 dark:hover:text-red-400 transition-colors cursor-pointer"
                     >
-                      Delete
+                      {t('history.delete')}
                     </button>
                   </td>
                 </tr>

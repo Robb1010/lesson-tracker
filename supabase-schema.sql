@@ -38,3 +38,17 @@ create policy "Users can update own lessons"
   on lessons for update using (auth.uid() = user_id);
 create policy "Users can delete own lessons"
   on lessons for delete using (auth.uid() = user_id);
+
+create table user_settings (
+  user_id uuid references auth.users(id) primary key,
+  theme text not null default 'system' check (theme in ('light', 'dark', 'system')),
+  language text not null default 'en' check (language in ('en', 'es')),
+  lessons_per_week integer not null default 2 check (lessons_per_week between 1 and 7),
+  lesson_days integer[] not null default '{1,3}',
+  updated_at timestamptz default now()
+);
+
+alter table user_settings enable row level security;
+
+create policy "Users manage own settings"
+  on user_settings for all using (auth.uid() = user_id);

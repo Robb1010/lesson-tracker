@@ -1,7 +1,11 @@
 import type { Purchase, Lesson, Balance } from '../types'
 
-export function calculateBalance(purchases: Purchase[], lessons: Lesson[]): Balance {
-  const totalLessons = purchases.reduce((sum, p) => sum + p.weeks * 2, 0)
+export function calculateBalance(
+  purchases: Purchase[],
+  lessons: Lesson[],
+  lessonsPerWeek: number
+): Balance {
+  const totalLessons = purchases.reduce((sum, p) => sum + p.weeks * lessonsPerWeek, 0)
   const attended = lessons.filter(l => l.status === 'attended').length
   const banked = lessons.filter(l => l.status === 'missed').length
   const remaining = totalLessons - attended
@@ -11,9 +15,10 @@ export function calculateBalance(purchases: Purchase[], lessons: Lesson[]): Bala
 
 export function calculateProjectedEndDate(
   remainingLessons: number,
+  lessonDays: number[],
   fromDate: Date = new Date()
 ): Date | null {
-  if (remainingLessons <= 0) return null
+  if (remainingLessons <= 0 || lessonDays.length === 0) return null
 
   let count = 0
   const current = new Date(fromDate)
@@ -21,7 +26,7 @@ export function calculateProjectedEndDate(
 
   while (count < remainingLessons) {
     const day = current.getDay()
-    if (day === 1 || day === 3) {
+    if (lessonDays.includes(day)) {
       count++
       if (count === remainingLessons) return new Date(current)
     }
